@@ -1,16 +1,15 @@
-import { headers } from "next/headers";
-
 // ─── Auth Error Page ───
 // Displays authentication errors from NextAuth.
 // Common errors: OAuth provider issues, email link expired, etc.
 
-export default async function ErrorPage() {
-  const headersList = await headers();
-  const searchParams = new URL(
-    headersList.get("x-url") ?? "http://localhost:3000/error"
-  ).searchParams;
-
-  const error = searchParams.get("error") ?? "Unknown error";
+export default async function ErrorPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const errorParam = Array.isArray(params.error) ? params.error[0] : params.error;
+  const error = errorParam ?? "Unknown error";
 
   // Map NextAuth error codes to user-friendly messages
   const errorMessages: Record<string, string> = {
