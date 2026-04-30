@@ -77,7 +77,8 @@ export async function GET(request: NextRequest): Promise<NextResponse<FileListRe
           downloadUrl = await getPresignedDownloadUrl(
             CLEANED_BUCKET,
             file.cleanedR2Key,
-            PREIGNED_URL_EXPIRY_SECONDS
+            PREIGNED_URL_EXPIRY_SECONDS,
+            file.cleanedName ?? file.originalName
           );
         } catch {
           // If presigned URL generation fails for one file, we still return

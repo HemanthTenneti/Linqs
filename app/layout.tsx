@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { Caveat, Inter } from "next/font/google";
+import { Inter, Source_Serif_4 } from "next/font/google";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { SketchCursor } from "@/components/layout/SketchCursor";
 import "./globals.css";
 
 const inter = Inter({
@@ -10,9 +9,9 @@ const inter = Inter({
   variable: "--font-sans",
 });
 
-const caveat = Caveat({
+const serif = Source_Serif_4({
   subsets: ["latin"],
-  variable: "--font-hand",
+  variable: "--font-serif",
 });
 
 // ─── Root Layout ───
@@ -32,10 +31,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${caveat.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${serif.variable} font-sans antialiased`}>
         <ThemeProvider>
           <AuthProvider>
-            <SketchCursor />
             {children}
           </AuthProvider>
         </ThemeProvider>

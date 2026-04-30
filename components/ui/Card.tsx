@@ -17,9 +17,9 @@ export function Card({
   return (
     <div
       className={`
-        bg-[var(--color-bg)] rounded-[var(--radius-lg)]
-        border-2 border-[var(--color-border)]
-        shadow-[var(--shadow-sm)]
+        bg-[color-mix(in_srgb,var(--color-bg)_94%,white_6%)] rounded-[var(--radius-lg)]
+        border border-[var(--color-border)]/70
+        shadow-[0_8px_22px_rgba(44,29,14,0.06)]
         ${hover ? "hover:shadow-[var(--shadow-md)] hover:border-[var(--color-border-hover)] transition-all duration-150" : ""}
         ${padding ? "p-5" : ""}
         ${className}

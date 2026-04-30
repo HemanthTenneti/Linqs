@@ -47,7 +47,7 @@ export function FileHistoryRow({ file }: FileHistoryRowProps) {
   const variant = badgeVariantMap[file.fileType] || "txt";
 
   return (
-    <div className="flex items-center gap-3 px-4 py-3 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-md)] hover:border-[var(--color-border-hover)] transition-colors">
+    <div className="flex items-center gap-3 px-4 py-3 bg-[var(--color-bg)] border border-[var(--color-border)]/70 rounded-[18px] hover:border-[var(--color-border-hover)] transition-colors shadow-[0_4px_12px_rgba(44,29,14,0.04)]">
       {/* File icon */}
       <div className="flex-shrink-0">
         <FileTypeIcon type={file.fileType} size={20} />

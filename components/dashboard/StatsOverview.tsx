@@ -35,7 +35,7 @@ export function StatsOverview({ totalFiles, totalLinksCleaned, storageUsed }: St
   const data = { totalFiles, totalLinksCleaned, storageUsed };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       {stats.map((stat, i) => (
         <motion.div
           key={stat.key}
@@ -43,16 +43,16 @@ export function StatsOverview({ totalFiles, totalLinksCleaned, storageUsed }: St
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.08 }}
         >
-          <Card className="rotate-[-0.2deg] odd:rotate-[0.2deg]">
+          <Card className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--color-bg-secondary)] flex items-center justify-center border border-[var(--color-border)]">
+              <div className="w-10 h-10 rounded-[14px] bg-[var(--color-bg-secondary)] flex items-center justify-center border border-[var(--color-border)]/70 shrink-0">
                 {stat.icon}
               </div>
-              <div>
-                <div className="text-xl font-bold text-[var(--color-text)]">
+              <div className="min-w-0">
+                <div className="text-2xl font-bold text-[var(--color-text)] leading-none">
                   {stat.getColor(data)}
                 </div>
-                <div className="text-xs text-[var(--color-text-secondary)]">
+                <div className="text-xs text-[var(--color-text-secondary)] mt-1">
                   {stat.label}
                 </div>
               </div>

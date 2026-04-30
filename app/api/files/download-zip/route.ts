@@ -134,7 +134,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<ZipDownlo
     const presignedUrl = await getPresignedDownloadUrl(
       CLEANED_BUCKET,
       zipKey,
-      PREIGNED_URL_EXPIRY_SECONDS
+      PREIGNED_URL_EXPIRY_SECONDS,
+      "linq-cleaned-files.zip"
     );
 
     return NextResponse.json({

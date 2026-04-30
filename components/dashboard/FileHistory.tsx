@@ -35,13 +35,15 @@ interface FileHistoryProps {
 export function FileHistory({ files, pagination, onLoadMore }: FileHistoryProps) {
   if (files.length === 0) {
     return (
-      <div className="sketch-frame p-8 sm:p-10">
+      <div className="sketch-frame p-6 sm:p-8 shadow-[var(--shadow-sm)]">
         <EmptyState
           title="No files yet"
           description="Upload your first document to start cleaning tracking parameters from URLs."
           action={
-            <Link href="/clean">
-              <Button icon={<Broom size={16} />}>Clean Your First File</Button>
+            <Link href="/dashboard?section=clean">
+              <Button icon={<Broom size={16} />} className="whitespace-nowrap">
+                Clean Your First File
+              </Button>
             </Link>
           }
         />
@@ -50,7 +52,7 @@ export function FileHistory({ files, pagination, onLoadMore }: FileHistoryProps)
   }
 
   return (
-    <div className="space-y-3 sketch-frame p-4 sm:p-6">
+    <div className="space-y-4 sketch-frame p-5 sm:p-6 shadow-[var(--shadow-sm)]">
       <div className="flex items-center justify-between mb-1">
         <h3 className="text-base font-semibold text-[var(--color-text)]">
           Recent Cleans
@@ -76,7 +78,7 @@ export function FileHistory({ files, pagination, onLoadMore }: FileHistoryProps)
 
       {/* Load more */}
       {pagination.hasMore && (
-        <div className="flex justify-center pt-4">
+        <div className="flex justify-end pt-1">
           <Button variant="secondary" onClick={onLoadMore}>
             Load More
           </Button>

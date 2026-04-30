@@ -20,7 +20,7 @@ import {
   PREIGNED_URL_EXPIRY_SECONDS,
   FILE_TYPE_CONTENT_TYPE,
 } from "@/lib/constants";
-import { calculateExpiryDate } from "@/lib/utils";
+import { calculateExpiryDate, generateCleanedFilename } from "@/lib/utils";
 
 // ─── POST /api/clean ───
 // The main workhorse: accepts uploaded files, processes each one to strip
@@ -209,18 +209,16 @@ export async function POST(request: NextRequest): Promise<NextResponse<CleanResp
       const cleanedContentType = FILE_TYPE_CONTENT_TYPE[fileType] ?? "application/octet-stream";
       await uploadToR2(CLEANED_BUCKET, cleanedR2Key, processorResult.cleanedContent, cleanedContentType);
 
+      // Generate the cleaned filename
+      const cleanedName = generateCleanedFilename(originalName);
+
       // Generate a presigned download URL for the cleaned file
       const cleanedDownloadUrl = await getPresignedDownloadUrl(
         CLEANED_BUCKET,
         cleanedR2Key,
-        PREIGNED_URL_EXPIRY_SECONDS
+        PREIGNED_URL_EXPIRY_SECONDS,
+        cleanedName
       );
-
-      // Generate the cleaned filename
-      const lastDotIndex = originalName.lastIndexOf(".");
-      const nameWithoutExt = lastDotIndex > 0 ? originalName.substring(0, lastDotIndex) : originalName;
-      const ext = lastDotIndex > 0 ? originalName.substring(lastDotIndex) : "";
-      const cleanedName = `${nameWithoutExt}_cleaned${ext}`;
 
       // Update the file document with results
       await FileModel.updateOne(

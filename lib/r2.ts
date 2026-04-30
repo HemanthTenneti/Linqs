@@ -52,13 +52,25 @@ export async function uploadToR2(
 export async function getPresignedDownloadUrl(
   bucket: string,
   key: string,
-  expiresIn: number = 3600 // 1 hour default — matches contract spec
+  expiresIn: number = 3600, // 1 hour default — matches contract spec
+  downloadFilename?: string
 ): Promise<string> {
+  const safeAsciiFilename = downloadFilename
+    ? downloadFilename.replace(/[\r\n"]/g, "_")
+    : undefined;
+  const encodedFilename = downloadFilename
+    ? encodeURIComponent(downloadFilename)
+    : undefined;
+  const contentDisposition = safeAsciiFilename
+    ? `attachment; filename="${safeAsciiFilename}"; filename*=UTF-8''${encodedFilename}`
+    : undefined;
+
   return getSignedUrl(
     r2,
     new GetObjectCommand({
       Bucket: bucket,
       Key: key,
+      ResponseContentDisposition: contentDisposition,
     }),
     { expiresIn }
   );
@@ -95,8 +107,8 @@ export function generateR2Key(
 }
 
 /**
- * Build the R2 key for a cleaned file — appends "_cleaned" before extension.
- * Example: "report.docx" → "report_cleaned.docx"
+ * Build the R2 key for a cleaned file — appends "-linq-cleaned" before extension.
+ * Example: "report.docx" → "report-linq-cleaned.docx"
  */
 export function generateCleanedR2Key(
   userId: string,
@@ -109,7 +121,7 @@ export function generateCleanedR2Key(
     lastDotIndex > 0 ? originalName.substring(0, lastDotIndex) : originalName;
   const extension =
     lastDotIndex > 0 ? originalName.substring(lastDotIndex) : "";
-  const cleanedName = `${nameWithoutExt}_cleaned${extension}`;
+  const cleanedName = `${nameWithoutExt}-linq-cleaned${extension}`;
 
   return `${userId}/${batchId}/${fileId}_${cleanedName}`;
 }

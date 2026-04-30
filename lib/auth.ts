@@ -14,6 +14,7 @@ import clientPromise from "./db";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
   providers: [Google, GitHub, Resend],
+  trustHost: true,
   session: { strategy: "database" },
   callbacks: {
     // Attach the user ID to the session object so API routes can reliably

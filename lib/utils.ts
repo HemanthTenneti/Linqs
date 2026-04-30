@@ -45,16 +45,16 @@ export function calculateExpiryDate(): Date {
 }
 
 /**
- * Generate the cleaned filename by appending "_cleaned" before the extension.
- * Example: "report.docx" → "report_cleaned.docx"
+ * Generate the cleaned filename by appending "-linq-cleaned" before the extension.
+ * Example: "report.docx" → "report-linq-cleaned.docx"
  */
 export function generateCleanedFilename(originalName: string): string {
   const lastDot = originalName.lastIndexOf(".");
-  if (lastDot <= 0) return `${originalName}_cleaned`;
+  if (lastDot <= 0) return `${originalName}-linq-cleaned`;
 
   const nameWithoutExt = originalName.substring(0, lastDot);
   const extension = originalName.substring(lastDot);
-  return `${nameWithoutExt}_cleaned${extension}`;
+  return `${nameWithoutExt}-linq-cleaned${extension}`;
 }
 
 /**

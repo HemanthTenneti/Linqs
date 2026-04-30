@@ -24,7 +24,7 @@ export default async function AppLayout({
       <Header />
 
       <main className="flex-1 overflow-auto">
-        <div className="mx-auto max-w-[760px] px-4 sm:px-6 py-8 sm:py-10">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           {children}
         </div>
       </main>

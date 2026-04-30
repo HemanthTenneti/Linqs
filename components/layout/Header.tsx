@@ -40,7 +40,7 @@ export function Header() {
               weight="bold"
               className="text-[var(--color-accent)] group-hover:rotate-12 transition-transform duration-200"
             />
-            <span className="font-semibold text-[var(--color-text)] text-[15px] handwritten">
+            <span className="font-semibold text-[var(--color-text)] text-[15px]">
               LinkCleaner
             </span>
           </Link>
@@ -56,8 +56,8 @@ export function Header() {
                 Dashboard
               </Link>
               <Link
-                href="/clean"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-md)] transition-colors"
+                href="/dashboard?section=clean"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-md)] transition-colors"
               >
                 <Broom size={16} />
                 Clean

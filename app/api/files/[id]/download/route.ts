@@ -73,7 +73,8 @@ export async function GET(
     const presignedUrl = await getPresignedDownloadUrl(
       CLEANED_BUCKET,
       file.cleanedR2Key,
-      PREIGNED_URL_EXPIRY_SECONDS
+      PREIGNED_URL_EXPIRY_SECONDS,
+      file.cleanedName ?? file.originalName
     );
 
     // 302 redirect sends the browser directly to the R2 presigned URL
