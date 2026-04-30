@@ -86,7 +86,13 @@ export class DocxProcessor implements FileProcessor {
       }
     }
 
-    const rebuilt = await zip.generateAsync({ type: "nodebuffer" });
+    // Rebuild as a compressed ZIP archive (.docx container) to avoid
+    // large size inflation from STORE/no-compression output.
+    const rebuilt = await zip.generateAsync({
+      type: "nodebuffer",
+      compression: "DEFLATE",
+      compressionOptions: { level: 9 },
+    });
 
     return {
       cleanedContent: Buffer.from(rebuilt),

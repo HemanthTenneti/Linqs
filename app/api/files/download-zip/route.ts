@@ -109,7 +109,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<ZipDownlo
   // ── Generate the ZIP buffer ──
   let zipBuffer: Buffer;
   try {
-    const zipOutput = await zip.generateAsync({ type: "nodebuffer" });
+    const zipOutput = await zip.generateAsync({
+      type: "nodebuffer",
+      compression: "DEFLATE",
+      compressionOptions: { level: 9 },
+    });
     zipBuffer = Buffer.from(zipOutput);
   } catch {
     return NextResponse.json(
