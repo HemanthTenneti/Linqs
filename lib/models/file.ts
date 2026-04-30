@@ -13,7 +13,7 @@ export interface ICleanedLink {
 export interface IFile {
   userId: Types.ObjectId;
   batchId: Types.ObjectId;
-  fileHash: string;
+  fileHash?: string;
   originalName: string;
   fileType: "docx" | "doc" | "pdf" | "md" | "txt";
   fileSize: number;
@@ -57,7 +57,7 @@ const fileSchema = new Schema<IFile, FileModel, IFileMethods>(
       required: true,
       index: true,
     },
-    fileHash: { type: String, required: true, index: true },
+    fileHash: { type: String, index: true },
     originalName: { type: String, required: true },
     fileType: {
       type: String,
