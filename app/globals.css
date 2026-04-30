@@ -131,3 +131,81 @@ select {
 .container-narrow {
   width: min(100% - 2rem, 880px);
 }
+
+@keyframes cursorSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cursorFuzz {
+  0%,
+  100% {
+    filter: blur(1.5px) contrast(1.05);
+  }
+  50% {
+    filter: blur(2.5px) contrast(1.2);
+  }
+}
+
+.animate-cursor-spin {
+  animation: cursorSpin 1.35s linear infinite;
+  transform-origin: center;
+}
+
+.animate-cursor-spin-slow {
+  animation: cursorSpin 2.8s linear infinite reverse;
+  transform-origin: center;
+}
+
+.animate-cursor-fuzz {
+  animation: cursorFuzz 1.7s ease-in-out infinite;
+}
+
+@keyframes cursorWobble {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  25% {
+    transform: translate(-51%, -49%) rotate(-1deg);
+  }
+  50% {
+    transform: translate(-49%, -51%) rotate(1.5deg);
+  }
+  75% {
+    transform: translate(-50%, -50%) rotate(-0.75deg);
+  }
+}
+
+@keyframes cursorBroken {
+  0% {
+    opacity: 0.35;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.03) rotate(8deg);
+  }
+  100% {
+    opacity: 0.35;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.animate-cursor-wobble {
+  animation: cursorWobble 1.1s ease-in-out infinite;
+}
+
+.animate-cursor-broken {
+  animation: cursorBroken 2.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.animate-cursor-broken-reverse {
+  animation: cursorBroken 2.8s ease-in-out infinite reverse;
+  transform-origin: center;
+}

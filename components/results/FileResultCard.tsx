@@ -52,7 +52,7 @@ export function FileResultCard({ result }: FileResultCardProps) {
   const isFailed = result.status === "failed";
 
   return (
-    <div className="bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] overflow-hidden">
+    <div className="bg-[var(--color-bg)] border-2 border-[var(--color-border)] rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] overflow-hidden rotate-[-0.2deg]">
       <div className="p-4">
         {/* Top row: icon + name + status + download */}
         <div className="flex items-center gap-3">
@@ -105,7 +105,7 @@ export function FileResultCard({ result }: FileResultCardProps) {
               href={result.downloadUrl}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-accent)] text-white text-xs font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-accent-hover)] transition-colors"
+            className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-text)] text-[var(--color-bg)] text-xs font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-accent)] hover:text-white transition-colors"
               download={result.cleanedName}
             >
               <DownloadSimple size={14} weight="bold" />
@@ -120,7 +120,7 @@ export function FileResultCard({ result }: FileResultCardProps) {
         <div>
           <button
             onClick={() => setExpanded(!expanded)}
-            className="w-full flex items-center justify-center gap-1.5 px-4 py-2 text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] border-t border-[var(--color-border)] transition-colors"
+            className="w-full flex items-center justify-center gap-1.5 px-4 py-2 text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] border-t-2 border-[var(--color-border)] transition-colors"
           >
             {expanded ? (
               <>

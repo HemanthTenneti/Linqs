@@ -20,7 +20,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden lg:flex flex-col w-56 border-r border-[var(--color-border)] bg-[var(--color-bg-secondary)] h-full">
+    <aside className="hidden lg:flex flex-col w-56 border-r-2 border-[var(--color-border)] bg-[var(--color-bg-secondary)] h-full">
       <nav className="flex flex-col gap-0.5 p-3">
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
@@ -30,10 +30,10 @@ export function Sidebar() {
                 whileHover={{ x: 4 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 className={`
-                  flex items-center gap-2.5 px-3 py-2 text-sm rounded-[var(--radius-md)] transition-colors
+                  flex items-center gap-2.5 px-3 py-2 text-sm rounded-[var(--radius-md)] transition-colors border border-transparent
                   ${
                     isActive
-                      ? "bg-[var(--color-bg-hover)] text-[var(--color-text)] font-medium"
+                      ? "bg-[var(--color-bg-hover)] text-[var(--color-text)] font-medium border-[var(--color-border)]"
                       : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text)]"
                   }
                 `}
@@ -47,7 +47,7 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom section */}
-      <div className="mt-auto p-3 border-t border-[var(--color-border)]">
+      <div className="mt-auto p-3 border-t-2 border-[var(--color-border)]">
         <Link href="/dashboard">
           <motion.div
             whileHover={{ x: 4 }}

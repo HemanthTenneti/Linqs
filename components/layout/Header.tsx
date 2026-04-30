@@ -30,7 +30,7 @@ export function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 bg-[var(--color-bg)]/80 backdrop-blur-md border-b border-[var(--color-border)]">
+    <header className="sticky top-0 z-40 bg-[var(--color-bg)]/82 backdrop-blur-md border-b-2 border-[var(--color-border)]">
       <div className="container-wide flex items-center justify-between h-14">
         {/* Logo + nav */}
         <div className="flex items-center gap-6">
@@ -40,7 +40,7 @@ export function Header() {
               weight="bold"
               className="text-[var(--color-accent)] group-hover:rotate-12 transition-transform duration-200"
             />
-            <span className="font-semibold text-[var(--color-text)] text-[15px]">
+            <span className="font-semibold text-[var(--color-text)] text-[15px] handwritten">
               LinkCleaner
             </span>
           </Link>
@@ -50,14 +50,14 @@ export function Header() {
             <nav className="hidden sm:flex items-center gap-1">
               <Link
                 href="/dashboard"
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-md)] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-md)] transition-colors"
               >
                 <SquaresFour size={16} />
                 Dashboard
               </Link>
               <Link
                 href="/clean"
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-md)] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-md)] transition-colors"
               >
                 <Broom size={16} />
                 Clean
@@ -95,7 +95,7 @@ export function Header() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -4, scale: 0.97 }}
                     transition={{ duration: 0.12 }}
-                    className="absolute right-0 top-full mt-1 w-48 bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border)] shadow-lg py-1 z-50"
+                    className="absolute right-0 top-full mt-1 w-48 bg-[var(--color-bg)] rounded-[var(--radius-lg)] border-2 border-[var(--color-border)] shadow-lg py-1 z-50"
                   >
                     <div className="px-3 py-2 border-b border-[var(--color-border)]">
                       <p className="text-sm font-medium text-[var(--color-text)] truncate">
@@ -119,7 +119,7 @@ export function Header() {
           ) : (
             <Link
               href="/auth/signin"
-              className="px-4 py-1.5 text-sm font-medium bg-[var(--color-accent)] text-white rounded-[var(--radius-md)] hover:bg-[var(--color-accent-hover)] transition-colors"
+              className="px-4 py-1.5 text-sm font-medium bg-[var(--color-text)] text-[var(--color-bg)] rounded-[var(--radius-md)] hover:bg-[var(--color-accent)] hover:text-white transition-colors border-2 border-[var(--color-border)]"
             >
               Sign In
             </Link>

@@ -28,10 +28,10 @@ export function ProcessingStatus({ files }: ProcessingStatusProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      className="bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-6"
+      className="bg-[var(--color-bg)] border-2 border-[var(--color-border)] rounded-[var(--radius-xl)] p-6 shadow-[var(--shadow-sm)]"
     >
       <div className="flex items-center gap-3 mb-5">
-        <div className="w-10 h-10 rounded-full bg-[var(--color-accent)]/10 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-full bg-[var(--color-accent)]/10 flex items-center justify-center border border-[var(--color-border)]">
           <Spinner size={22} className="text-[var(--color-accent)] animate-spin" />
         </div>
         <div>
@@ -52,7 +52,7 @@ export function ProcessingStatus({ files }: ProcessingStatusProps) {
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.08 }}
-            className="flex items-center gap-3 px-3 py-2 rounded-[var(--radius-md)] bg-[var(--color-bg-secondary)]"
+            className="flex items-center gap-3 px-3 py-2 rounded-[var(--radius-md)] bg-[var(--color-bg-secondary)] border border-[var(--color-border)]"
           >
             <File size={16} className="text-[var(--color-text-secondary)] flex-shrink-0" />
             <span className="flex-1 text-sm text-[var(--color-text)] truncate">

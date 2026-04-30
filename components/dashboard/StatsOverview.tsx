@@ -43,9 +43,9 @@ export function StatsOverview({ totalFiles, totalLinksCleaned, storageUsed }: St
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.08 }}
         >
-          <Card>
+          <Card className="rotate-[-0.2deg] odd:rotate-[0.2deg]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--color-bg-secondary)] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--color-bg-secondary)] flex items-center justify-center border border-[var(--color-border)]">
                 {stat.icon}
               </div>
               <div>

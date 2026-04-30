@@ -47,7 +47,7 @@ export function DownloadAllButton({ results, batchId }: DownloadAllButtonProps) 
       whileTap={{ scale: 0.97 }}
       onClick={handleDownload}
       disabled={loading}
-      className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-accent)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-accent-hover)] transition-colors disabled:opacity-50 disabled:pointer-events-none"
+      className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-text)] text-[var(--color-bg)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-accent)] hover:text-white transition-colors disabled:opacity-50 disabled:pointer-events-none border-2 border-[var(--color-border)]"
     >
       {loading ? (
         <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />

@@ -58,7 +58,7 @@ export function ResultsSection({ results, batchId }: ResultsSectionProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-text)]">
+          <h2 className="text-lg sm:text-xl font-semibold text-[var(--color-text)] handwritten">
             Cleaning Complete
           </h2>
           {expiryDate && (

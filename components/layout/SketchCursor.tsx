@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Sparkle } from "@phosphor-icons/react";
 import gsap from "gsap";
 
 type CursorMode = "default" | "link" | "button" | "drag";
@@ -26,16 +25,12 @@ function getCursorMode(target: EventTarget | null): CursorMode {
 
 export function SketchCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
-  const iconRef = useRef<SVGSVGElement>(null);
   const [visible, setVisible] = useState(false);
   const modeRef = useRef<CursorMode>("default");
 
   useEffect(() => {
     const cursor = cursorRef.current;
-    const label = labelRef.current;
-    const icon = iconRef.current;
-    if (!cursor || !label || !icon) return;
+    if (!cursor) return;
 
     const isFinePointer = window.matchMedia("(pointer: fine)").matches;
     if (!isFinePointer) {
@@ -46,37 +41,45 @@ export function SketchCursor() {
     const yTo = gsap.quickTo(cursor, "y", { duration: 0.18, ease: "power3.out" });
     const scaleTo = gsap.quickTo(cursor, "scale", { duration: 0.16, ease: "power2.out" });
     const rotateTo = gsap.quickTo(cursor, "rotate", { duration: 0.2, ease: "power2.out" });
+    const ring = cursor.querySelector<HTMLElement>("[data-ring]");
+    const glow = cursor.querySelector<HTMLElement>("[data-glow]");
+    const core = cursor.querySelector<HTMLElement>("[data-core]");
 
     const setMode = (mode: CursorMode) => {
       modeRef.current = mode;
-      const nextLabel =
-        mode === "link" ? "open" : mode === "button" ? "click" : mode === "drag" ? "drag" : "";
-
-      gsap.to(label, { opacity: nextLabel ? 1 : 0, duration: 0.12 });
-      label.textContent = nextLabel;
-
-      gsap.to(icon, { opacity: nextLabel ? 1 : 0.9, duration: 0.12 });
-      icon.innerHTML =
-        mode === "link"
-          ? "<path d='M6 11.5A5.5 5.5 0 0 1 11.5 6H14v2h-2.5A3.5 3.5 0 1 0 15 11.5V14h-2v-2.5A5.5 5.5 0 0 1 7.5 17H5v-2h2.5A3.5 3.5 0 0 0 11 11.5V9h2v2.5A5.5 5.5 0 0 1 6 11.5Z' fill='currentColor'/>"
-          : mode === "button"
-          ? "<path d='M8 7l5 5-5 5' fill='none' stroke='currentColor' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'/><path d='M13 12H5' fill='none' stroke='currentColor' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'/>"
-          : mode === "drag"
-          ? "<path d='M8 5v14M16 5v14' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round'/><path d='M11 8l-3 4 3 4M13 8l3 4-3 4' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/>"
-          : "<path d='M9 4l7 7-4 1-1 4-2-2-2 2-1-1 2-2-2-2 3-3-1-4z' fill='currentColor' opacity='0.85'/>";
+      cursor.dataset.mode = mode;
+      gsap.to(ring, {
+        scale: mode === "drag" ? 1.18 : mode === "button" ? 1.08 : 1,
+        opacity: mode === "default" ? 0.9 : 1,
+        duration: 0.18,
+      });
+      gsap.to(glow, {
+        scale: mode === "drag" ? 1.24 : 1.14,
+        opacity: mode === "default" ? 0.42 : 0.62,
+        duration: 0.18,
+      });
+      gsap.to(core, {
+        scale: mode === "button" ? 1.08 : 1,
+        opacity: mode === "default" ? 0.9 : 1,
+        duration: 0.12,
+      });
 
       gsap.to(cursor, {
-        width: mode === "default" ? 54 : mode === "drag" ? 72 : 64,
-        height: 54,
-        borderRadius: mode === "drag" ? 18 : 999,
-        backgroundColor:
-          mode === "default" ? "rgba(255, 248, 225, 0.84)" : "rgba(255, 255, 255, 0.92)",
-        borderColor: mode === "default" ? "rgba(73, 61, 45, 0.35)" : "rgba(73, 61, 45, 0.45)",
+        width: mode === "drag" ? 76 : 58,
+        height: mode === "drag" ? 76 : 58,
         duration: 0.18,
       });
 
-      scaleTo(mode === "drag" ? 1.12 : mode === "default" ? 1 : 1.08);
-      rotateTo(mode === "default" ? -4 : 0);
+      scaleTo(mode === "drag" ? 1.08 : mode === "button" ? 1.04 : 1);
+      rotateTo(mode === "default" ? 4 : 0);
+
+      if (mode === "button") {
+        gsap.fromTo(
+          cursor,
+          { x: `+=0.5`, y: `-=0.5` },
+          { x: `-=0.5`, y: `+=0.5`, duration: 0.08, yoyo: true, repeat: 3, ease: "none" }
+        );
+      }
     };
 
     const onPointerMove = (event: PointerEvent) => {
@@ -115,29 +118,38 @@ export function SketchCursor() {
     };
   }, []);
 
-  return (
+    return (
     <div
       ref={cursorRef}
       aria-hidden="true"
       className={[
         "pointer-events-none fixed left-0 top-0 z-[80]",
-        "flex items-center justify-center gap-2 border shadow-[0_20px_45px_rgba(37,28,18,0.18)]",
-        "mix-blend-normal backdrop-blur-md transition-[opacity] duration-150",
+        "grid place-items-center overflow-visible",
+        "mix-blend-normal transition-[opacity] duration-150",
+        "data-[mode=button]:animate-cursor-wobble data-[mode=drag]:animate-cursor-wobble",
         visible ? "opacity-100" : "opacity-0",
       ].join(" ")}
       style={{
-        width: 54,
-        height: 54,
-        borderColor: "rgba(73, 61, 45, 0.35)",
-        background: "rgba(255, 248, 225, 0.84)",
         transform: "translate(-50%, -50%)",
       }}
-    >
-      <Sparkle ref={iconRef} size={16} weight="fill" className="text-[var(--ink)]" />
+      >
       <span
-        ref={labelRef}
-        className="text-[10px] uppercase tracking-[0.24em] text-[var(--ink-soft)]"
+        data-glow
+        className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(246,239,230,0.92)_0%,rgba(246,239,230,0.44)_38%,transparent_68%)] blur-[2px] animate-cursor-fuzz"
       />
+      <span
+        data-ring
+        className="absolute inset-[4px] rounded-full border-2 border-[rgba(47,36,24,0.62)] bg-[rgba(255,248,225,0.68)] shadow-[0_0_0_1px_rgba(255,255,255,0.35),0_12px_26px_rgba(44,29,14,0.16)] animate-cursor-spin"
+      />
+      <span
+        className="absolute inset-[9px] rounded-full border border-dashed border-[rgba(47,36,24,0.28)] animate-cursor-spin-slow"
+      />
+      <span
+        data-core
+        className="absolute inset-[17px] rounded-full bg-[radial-gradient(circle,rgba(31,23,16,0.9)_0%,rgba(31,23,16,0.55)_45%,transparent_72%)] blur-[0.5px]"
+      />
+      <span className="absolute inset-[1px] rounded-full border border-[rgba(47,36,24,0.18)] rotate-12 animate-cursor-broken" />
+      <span className="absolute inset-[6px] rounded-full border border-dotted border-[rgba(47,36,24,0.18)] -rotate-12 animate-cursor-broken-reverse" />
     </div>
   );
 }

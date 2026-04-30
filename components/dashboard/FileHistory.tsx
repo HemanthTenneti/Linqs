@@ -35,20 +35,22 @@ interface FileHistoryProps {
 export function FileHistory({ files, pagination, onLoadMore }: FileHistoryProps) {
   if (files.length === 0) {
     return (
-      <EmptyState
-        title="No files yet"
-        description="Upload your first document to start cleaning tracking parameters from URLs."
-        action={
-          <Link href="/clean">
-            <Button icon={<Broom size={16} />}>Clean Your First File</Button>
-          </Link>
-        }
-      />
+      <div className="sketch-frame p-8 sm:p-10">
+        <EmptyState
+          title="No files yet"
+          description="Upload your first document to start cleaning tracking parameters from URLs."
+          action={
+            <Link href="/clean">
+              <Button icon={<Broom size={16} />}>Clean Your First File</Button>
+            </Link>
+          }
+        />
+      </div>
     );
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 sketch-frame p-4 sm:p-6">
       <div className="flex items-center justify-between mb-1">
         <h3 className="text-base font-semibold text-[var(--color-text)]">
           Recent Cleans

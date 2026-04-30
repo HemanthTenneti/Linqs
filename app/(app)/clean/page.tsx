@@ -237,16 +237,22 @@ function CleanPageContent() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-3xl mx-auto space-y-6">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
         {/* Page header */}
-        <div className="mb-6">
-          <h1 className="text-xl font-bold text-[var(--color-text)]">Clean Your Files</h1>
-          <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+        <div className="sketch-frame p-6 sm:p-8 mb-6 rotate-[-0.35deg]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] text-xs uppercase tracking-[0.22em] text-[var(--color-text-secondary)] mb-4">
+            <Broom size={14} weight="bold" />
+            Clean workspace
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)] handwritten">
+            Clean Your Files
+          </h1>
+          <p className="text-sm sm:text-base text-[var(--color-text-secondary)] mt-2 max-w-2xl leading-relaxed">
             Upload documents and we&apos;ll strip all tracking parameters from every URL
           </p>
         </div>
@@ -261,11 +267,14 @@ function CleanPageContent() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
+              className="space-y-5"
             >
-              <DropZone
-                onFilesSelected={handleFilesSelected}
-                disabled={pageState === "ready"}
-              />
+              <div className="sketch-frame p-4 sm:p-5 rotate-[0.2deg]">
+                <DropZone
+                  onFilesSelected={handleFilesSelected}
+                  disabled={pageState === "ready"}
+                />
+              </div>
 
               {/* File list with animated pills */}
               <FileList files={selectedFiles} onRemove={handleRemoveFile} />
@@ -278,7 +287,7 @@ function CleanPageContent() {
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-6 flex items-center justify-between"
+                  className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sketch-frame p-4"
                 >
                   <span className="text-sm text-[var(--color-text-secondary)]">
                     {selectedFiles.length} file{selectedFiles.length !== 1 ? "s" : ""} selected
@@ -304,6 +313,7 @@ function CleanPageContent() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
+              className="sketch-frame p-4 sm:p-6"
             >
               <ProcessingStatus files={processingFiles} />
             </motion.div>
@@ -319,7 +329,9 @@ function CleanPageContent() {
               transition={{ duration: 0.2 }}
               className="space-y-5"
             >
-              <ResultsSection results={results} batchId={batchId} />
+              <div className="sketch-frame p-4 sm:p-6">
+                <ResultsSection results={results} batchId={batchId} />
+              </div>
 
               {/* Clean more button */}
               <div className="flex justify-center pt-4">
@@ -342,7 +354,7 @@ function CleanPageContent() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="text-center py-12"
+              className="text-center py-12 sketch-frame p-8"
             >
               <p className="text-sm text-[var(--color-danger)] mb-4">
                 {errorMessage || "Something went wrong"}

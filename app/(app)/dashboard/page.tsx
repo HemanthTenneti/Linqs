@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { Broom } from "@phosphor-icons/react";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { StatsOverview } from "@/components/dashboard/StatsOverview";
 import { FileHistory } from "@/components/dashboard/FileHistory";
@@ -83,9 +84,15 @@ export default function DashboardPage() {
         className="space-y-8"
       >
         {/* Page header */}
-        <div>
-          <h1 className="text-xl font-bold text-[var(--color-text)]">Dashboard</h1>
-          <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+        <div className="sketch-frame p-6 sm:p-8 rotate-[-0.25deg]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] text-xs uppercase tracking-[0.22em] text-[var(--color-text-secondary)] mb-4">
+            <Broom size={14} weight="bold" />
+            Archive desk
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)] handwritten">
+            Dashboard
+          </h1>
+          <p className="text-sm sm:text-base text-[var(--color-text-secondary)] mt-2">
             Your cleaning history and statistics
           </p>
         </div>

@@ -47,7 +47,7 @@ export function FileList({ files, onRemove }: FileListProps) {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ scale: 0.85, opacity: 0, height: 0, marginBottom: 0 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              className="flex items-center gap-3 px-4 py-2.5 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-md)]"
+              className="flex items-center gap-3 px-4 py-2.5 bg-[var(--color-bg)] border-2 border-[var(--color-border)] rounded-[var(--radius-md)] shadow-[var(--shadow-sm)]"
             >
               {/* File type icon */}
               <div className="flex-shrink-0 text-[var(--color-text-secondary)]">

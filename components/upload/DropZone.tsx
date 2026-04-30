@@ -124,11 +124,11 @@ export function DropZone({ onFilesSelected, disabled = false }: DropZoneProps) {
         onClick={handleClick}
         className={`
           relative flex flex-col items-center justify-center py-16 px-8
-          border-2 border-dashed rounded-[var(--radius-xl)] cursor-pointer
+          border-2 border-dashed rounded-[var(--radius-xl)]
           transition-colors duration-200
           ${
             disabled
-              ? "opacity-50 cursor-not-allowed border-[var(--color-border)]"
+              ? "opacity-50 border-[var(--color-border)]"
               : isDragOver
               ? "border-[var(--color-accent)] bg-[var(--color-accent)]/5 drag-glow"
               : "border-[var(--color-border)] hover:border-[var(--color-border-hover)] hover:bg-[var(--color-bg-hover)]"

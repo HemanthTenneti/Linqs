@@ -51,7 +51,7 @@ export function StatsBar({ linksFound, linksCleaned, linksUntouched }: StatsBarP
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="flex flex-wrap items-center justify-center gap-6 py-4 px-5 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-lg)]"
+      className="flex flex-wrap items-center justify-center gap-6 py-4 px-5 bg-[var(--color-bg)] border-2 border-[var(--color-border)] rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)]"
     >
       <AnimatedCounter
         value={linksFound}
