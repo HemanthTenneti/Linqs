@@ -6,9 +6,9 @@ import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { ArrowCounterClockwise, Broom } from "@phosphor-icons/react";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import { StatsOverview } from "@/components/dashboard/StatsOverview";
 import { FileHistory } from "@/components/dashboard/FileHistory";
-import { Spinner } from "@/components/ui/Spinner";
 import { DropZone } from "@/components/upload/DropZone";
 import { FileList } from "@/components/upload/FileList";
 import { DocWarning } from "@/components/upload/DocWarning";
@@ -287,9 +287,7 @@ function DashboardContent() {
   if (loadingHistory) {
     return (
       <DashboardShell>
-        <div className="flex items-center justify-center py-24">
-          <Spinner size="lg" />
-        </div>
+        <DashboardSkeleton />
       </DashboardShell>
     );
   }
