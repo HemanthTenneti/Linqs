@@ -13,6 +13,7 @@ export interface ICleanedLink {
 export interface IFile {
   userId: Types.ObjectId;
   batchId: Types.ObjectId;
+  fileHash: string;
   originalName: string;
   fileType: "docx" | "doc" | "pdf" | "md" | "txt";
   fileSize: number;
@@ -24,6 +25,7 @@ export interface IFile {
   linksFound: number;
   linksCleaned: number;
   cleanedLinks?: ICleanedLink[];
+  cachedFromFileId?: Types.ObjectId;
   createdAt: Date;
   expiresAt: Date;
   purgedAt?: Date;
@@ -55,6 +57,7 @@ const fileSchema = new Schema<IFile, FileModel, IFileMethods>(
       required: true,
       index: true,
     },
+    fileHash: { type: String, required: true, index: true },
     originalName: { type: String, required: true },
     fileType: {
       type: String,
@@ -81,6 +84,10 @@ const fileSchema = new Schema<IFile, FileModel, IFileMethods>(
         removedParams: [String],
       },
     ],
+    cachedFromFileId: {
+      type: Schema.Types.ObjectId,
+      ref: "File",
+    },
     expiresAt: {
       type: Date,
       required: true,
@@ -107,6 +114,8 @@ const fileSchema = new Schema<IFile, FileModel, IFileMethods>(
 
 // Compound index: efficiently query "all files for this user, newest first"
 fileSchema.index({ userId: 1, createdAt: -1 });
+// Fast cache lookup by user + file type + content hash among valid completed files
+fileSchema.index({ userId: 1, fileType: 1, fileHash: 1, status: 1, expiresAt: -1 });
 
 export const FileModel =
   (models.File as FileModel | undefined) ??

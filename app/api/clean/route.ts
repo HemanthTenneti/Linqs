@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createHash } from "node:crypto";
+import { Types } from "mongoose";
 import { auth } from "@/lib/auth";
 import { connectMongoose } from "@/lib/db";
 import { FileModel } from "@/lib/models/file";
@@ -167,50 +169,104 @@ export async function POST(request: NextRequest): Promise<NextResponse<CleanResp
     const { extension, fileType } = mimeInfo;
     const originalName = file.name || `upload.${extension}`;
 
+    let createdFileId: string | null = null;
+
     try {
       // Read file into buffer
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
+      const fileHash = createHash("sha256").update(buffer).digest("hex");
+      const cleanedName = generateCleanedFilename(originalName);
 
-      // Generate unique R2 key for the original
-      // We use a temp ID placeholder and will update after doc creation
-      const tempId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-      const originalR2Key = generateR2Key(userId, batchId, tempId, originalName);
+      // Cache hit: same user + same file bytes + same file type, still within TTL.
+      // We reuse existing cleaned/original R2 objects and only write a new File row
+      // so history still shows this operation as a fresh "cleaned" action.
+      const cachedFile = await FileModel.findOne({
+        userId,
+        fileType,
+        fileHash,
+        status: "completed",
+        cleanedR2Key: { $exists: true, $ne: null },
+        expiresAt: { $gt: new Date() },
+        purgedAt: null,
+      })
+        .sort({ expiresAt: -1 })
+        .lean();
 
-      // Upload original to R2
-      await uploadToR2(ORIGINALS_BUCKET, originalR2Key, buffer, file.type);
+      if (cachedFile?.cleanedR2Key) {
+        const reusedFile = await FileModel.create({
+          userId,
+          batchId,
+          fileHash,
+          originalName,
+          fileType,
+          fileSize: buffer.length,
+          originalR2Key: cachedFile.originalR2Key,
+          status: "completed",
+          cleanedR2Key: cachedFile.cleanedR2Key,
+          cleanedName,
+          linksFound: cachedFile.linksFound,
+          linksCleaned: cachedFile.linksCleaned,
+          cleanedLinks: cachedFile.cleanedLinks ?? [],
+          cachedFromFileId: cachedFile._id,
+          expiresAt,
+        });
+
+        const cleanedDownloadUrl = await getPresignedDownloadUrl(
+          CLEANED_BUCKET,
+          cachedFile.cleanedR2Key,
+          PREIGNED_URL_EXPIRY_SECONDS,
+          cleanedName
+        );
+
+        results.push({
+          id: reusedFile._id.toString(),
+          originalName,
+          fileType,
+          fileSize: buffer.length,
+          linksFound: cachedFile.linksFound,
+          linksCleaned: cachedFile.linksCleaned,
+          cleanedDownloadUrl,
+          warning: "Served instantly from recent cache.",
+        });
+        continue;
+      }
+
+      const fileId = new Types.ObjectId();
+      createdFileId = fileId.toString();
+      const finalOriginalKey = generateR2Key(userId, batchId, createdFileId, originalName);
 
       // Create the File document — status starts as "processing"
-      const fileDoc = await FileModel.create({
+      await FileModel.create({
+        _id: fileId,
         userId,
         batchId,
+        fileHash,
         originalName,
         fileType,
         fileSize: buffer.length,
-        originalR2Key,
+        originalR2Key: finalOriginalKey,
         status: "processing",
         linksFound: 0,
         linksCleaned: 0,
         expiresAt,
       });
 
-      const fileId = fileDoc._id.toString();
-
-      // Re-upload original with the real fileId in the key
-      // This ensures the R2 key matches our convention: {userId}/{batchId}/{fileId}_{filename}
-      const finalOriginalKey = generateR2Key(userId, batchId, fileId, originalName);
+      // Upload original to R2 once using the final key.
       await uploadToR2(ORIGINALS_BUCKET, finalOriginalKey, buffer, file.type);
 
       // Process the file through the appropriate processor
       const processorResult = await processFile(buffer, extension, sanitizeUrl);
 
       // Generate cleaned R2 key and upload
-      const cleanedR2Key = generateCleanedR2Key(userId, batchId, fileId, originalName);
+      const cleanedR2Key = generateCleanedR2Key(
+        userId,
+        batchId,
+        createdFileId,
+        originalName
+      );
       const cleanedContentType = FILE_TYPE_CONTENT_TYPE[fileType] ?? "application/octet-stream";
       await uploadToR2(CLEANED_BUCKET, cleanedR2Key, processorResult.cleanedContent, cleanedContentType);
-
-      // Generate the cleaned filename
-      const cleanedName = generateCleanedFilename(originalName);
 
       // Generate a presigned download URL for the cleaned file
       const cleanedDownloadUrl = await getPresignedDownloadUrl(
@@ -225,7 +281,6 @@ export async function POST(request: NextRequest): Promise<NextResponse<CleanResp
         { _id: fileId },
         {
           $set: {
-            originalR2Key: finalOriginalKey,
             status: "completed",
             cleanedR2Key,
             cleanedName,
@@ -241,7 +296,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<CleanResp
       );
 
       results.push({
-        id: fileId,
+        id: createdFileId,
         originalName,
         fileType,
         fileSize: buffer.length,
@@ -256,6 +311,22 @@ export async function POST(request: NextRequest): Promise<NextResponse<CleanResp
       // The batch status will be set to "partial" if any file fails.
       const errorMessage =
         error instanceof Error ? error.message : "Unknown processing error";
+
+      if (createdFileId) {
+        try {
+          await FileModel.updateOne(
+            { _id: createdFileId },
+            {
+              $set: {
+                status: "failed",
+                errorMessage,
+              },
+            }
+          );
+        } catch {
+          // Best effort: do not fail the whole batch response if status update fails.
+        }
+      }
 
       results.push({
         id: "",

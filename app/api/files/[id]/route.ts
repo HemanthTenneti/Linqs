@@ -60,21 +60,36 @@ export async function DELETE(
   }
 
   // ── Delete from R2 ──
-  // We attempt both deletions even if one fails — partial cleanup is better
-  // than no cleanup. Errors are collected but don't block the DB deletion.
+  // With content-cache dedupe enabled, multiple file records can reference the
+  // same R2 object. Only delete the object when this is the last active reference.
   const r2Errors: string[] = [];
+  const hasOtherOriginalRef = await FileModel.exists({
+    _id: { $ne: id },
+    originalR2Key: file.originalR2Key,
+    purgedAt: null,
+  });
 
-  try {
-    await deleteFromR2(ORIGINALS_BUCKET, file.originalR2Key);
-  } catch {
-    r2Errors.push("Failed to delete original from storage");
+  if (!hasOtherOriginalRef) {
+    try {
+      await deleteFromR2(ORIGINALS_BUCKET, file.originalR2Key);
+    } catch {
+      r2Errors.push("Failed to delete original from storage");
+    }
   }
 
   if (file.cleanedR2Key) {
-    try {
-      await deleteFromR2(CLEANED_BUCKET, file.cleanedR2Key);
-    } catch {
-      r2Errors.push("Failed to delete cleaned file from storage");
+    const hasOtherCleanedRef = await FileModel.exists({
+      _id: { $ne: id },
+      cleanedR2Key: file.cleanedR2Key,
+      purgedAt: null,
+    });
+
+    if (!hasOtherCleanedRef) {
+      try {
+        await deleteFromR2(CLEANED_BUCKET, file.cleanedR2Key);
+      } catch {
+        r2Errors.push("Failed to delete cleaned file from storage");
+      }
     }
   }
 

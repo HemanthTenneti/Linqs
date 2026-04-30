@@ -56,25 +56,40 @@ export async function GET(request: NextRequest): Promise<NextResponse<CleanupRes
 
   for (const file of expiredFiles) {
     try {
-      // Delete original from R2
-      try {
-        await deleteFromR2(ORIGINALS_BUCKET, file.originalR2Key);
-      } catch {
-        errors.push(`Failed to delete original R2 object for file ${file._id}`);
-      }
-
-      // Delete cleaned version from R2 (may not exist for failed files)
-      if (file.cleanedR2Key) {
-        try {
-          await deleteFromR2(CLEANED_BUCKET, file.cleanedR2Key);
-        } catch {
-          errors.push(`Failed to delete cleaned R2 object for file ${file._id}`);
-        }
-      }
-
       // Mark as purged so we don't retry on the next cron run
       file.purgedAt = now;
       await file.save();
+
+      // Only delete R2 objects when no remaining non-purged references exist.
+      // This protects shared cached objects referenced by multiple file rows.
+      const hasOriginalRefs = await FileModel.exists({
+        _id: { $ne: file._id },
+        originalR2Key: file.originalR2Key,
+        purgedAt: null,
+      });
+      if (!hasOriginalRefs) {
+        try {
+          await deleteFromR2(ORIGINALS_BUCKET, file.originalR2Key);
+        } catch {
+          errors.push(`Failed to delete original R2 object for file ${file._id}`);
+        }
+      }
+
+      if (file.cleanedR2Key) {
+        const hasCleanedRefs = await FileModel.exists({
+          _id: { $ne: file._id },
+          cleanedR2Key: file.cleanedR2Key,
+          purgedAt: null,
+        });
+        if (!hasCleanedRefs) {
+          try {
+            await deleteFromR2(CLEANED_BUCKET, file.cleanedR2Key);
+          } catch {
+            errors.push(`Failed to delete cleaned R2 object for file ${file._id}`);
+          }
+        }
+      }
+
       purgedFiles++;
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
